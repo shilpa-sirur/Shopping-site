@@ -59,11 +59,12 @@ def show_melon(id):
 @app.route("/cart")
 def shopping_cart():
     """Display content of shopping cart."""
-    if 'cart' in session:
-       list_of_melon_ids = session['cart']
-       melon = model.Melon.get_by_id(id)
-       print melon
-
+    if session['cart'] in session.keys():
+        list_of_melon_ids = session['cart']
+        for i in list_of_melon_ids:
+        melon = model.Melon.get_by_id(id)
+    print melon
+    pass
     
 
 
@@ -80,11 +81,18 @@ def add_to_cart(id):
     3. else, we add items to cart
 
     """
-    
-    if 'cart' in session:
-        session['cart'].append(id)
+    if session['cart'] in session.keys():
+        session['cart'] = {}
+        print "created new dictionary"
+    print "This is id",id
+    print "This is a session", session['cart']
+  
+    if str(id) in session['cart']:
+        session['cart'][str(id)]+= 1
+        print" INCREMENTING A MELON"
     else:
-        session['cart'] = [id]
+        session['cart'][str(id)] = 1
+        print"CREATING A NEW MELON IN DICT"
     flash("The melon was successfully added")
     print session
     return render_template("cart.html") 
