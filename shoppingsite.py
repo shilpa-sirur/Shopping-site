@@ -7,7 +7,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash
+from flask import Flask, render_template, redirect, flash, session
 import jinja2
 
 import model
@@ -59,11 +59,13 @@ def show_melon(id):
 @app.route("/cart")
 def shopping_cart():
     """Display content of shopping cart."""
+    if 'cart' in session:
+       list_of_melon_ids = session['cart']
+       melon = model.Melon.get_by_id(id)
+       print melon
 
-    # TODO: Display the contents of the shopping cart.
-    #   - The cart is a list in session containing melons added
+    
 
-    return render_template("cart.html")
 
 
 @app.route("/add_to_cart/<int:id>")
@@ -72,13 +74,20 @@ def add_to_cart(id):
 
     When a melon is added to the cart, redirect browser to the shopping cart
     page and display a confirmation message: 'Successfully added to cart'.
+    Approach:
+    1. look into Session, the browser to see if there is a cart
+    2. if not, then we add a cart, and then add item to cart_list
+    3. else, we add items to cart
+
     """
-
-    # TODO: Finish shopping cart functionality
-    #   - use session variables to hold cart list
-
-    return "Oops! This needs to be implemented!"
-
+    
+    if 'cart' in session:
+        session['cart'].append(id)
+    else:
+        session['cart'] = [id]
+    flash("The melon was successfully added")
+    print session
+    return render_template("cart.html") 
 
 @app.route("/login", methods=["GET"])
 def show_login():
@@ -87,7 +96,7 @@ def show_login():
     return render_template("login.html")
 
 
-@app.route("/login", methods=["POST"])
+@app.route("/form-signin", methods=["POST"])
 def process_login():
     """Log user into site.
 
@@ -95,8 +104,7 @@ def process_login():
     dictionary, look up the user, and store them in the session.
     """
 
-    # TODO: Need to implement this!
-
+    
     return "Oops! This needs to be implemented"
 
 
